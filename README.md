@@ -51,4 +51,17 @@ A. iSAM and SAM
   the iSAM mainly has three subfunctions: odemotry update and measurement update are to add new measurement and control input   
   to the iSAM. relinearization is to relinearize the motion and measurement models. The initilization is to get start with 
   iSAM. Each of them is written in the simulation dataset and and preprocessed vp dataset.
-  
+
+The JCBB implementation relies on four files:
+1. da_jcbb.m
+2. JCBB_R.m
+3. joint_compability.m
+4. individual_compatibility.m
+
+Modify the JCBB.alpha in da_jcbb.m to define the significance level needed for assessing whether a measurement is associated with a new landmark. Currently the alpha level is set at .001. The Mahalanobis Distance threshold is chi2inv(1-JCBB.alpha,DOF), where DOF = (Number of measuremeents in current hypothesis) * 2. You can change the Mahalanobis distance threshold in joint_compatibility.m.
+
+The function da_jcbb.m calls the recursive function JCBB_R.m, which implements the branch and bound joint-compability data association approach described in Jose Neira's paper.
+
+joint_compatibility.m is a function that takes in a set of measurements and a hypothesis of the landmark ids associated with those measurements. It returns true if the assignment hypothesis is compatible--based on the alpha threshold.
+
+individual_compatibility.m is a special case function that checks if a single measurement is individually compatible with a single hypothesis of the landmark associated with that measurement.
